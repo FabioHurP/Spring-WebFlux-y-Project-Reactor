@@ -1,0 +1,33 @@
+* docker compose up --> Levantar el docker
+docker compose down -v
+docker compose up -d
+
+mvn spring-boot:run 
+
+mongodb://localhost:27017/catalog?authSource=admin
+
+mongosh --versión --> desde el cmd para saber la versión
+Get-Command mongosh -All --> powerShell
+
+#spring.data.mongodb.username=master
+#spring.data.mongodb.password=fabiomongo
+
+#spring.data.mongodb.authentication.database=admin
+
+****** JAVA Records --> Son inmutables --> Una vez creado un record no puedo setear nada --> No tienen Setter
+Casi siempre son mas q todo de lectura, no escritura
+
+****** Review --> Es una clase
+Porque es algo q si puedo cambiar o modificar alguno de sus atributos ejemplo el rating, le puse 4 luego algo no me gusto le cambio a 2 
+
+
+#########Querys Base Datos
+
+db["reservations"].find()
+db["restaurants"].find({'cuisineType':'Japanese'})
+db["reservations"].find().limit(2)
+db["restaurants"].find({'name':'Pasta Fresca'})
+db["restaurants"].find({'name': {$regex:"Pasta", $options:"i"}})
+db["restaurants"].find({'name': {$regex:"La", $options:"i"}})
+db.restaurants.find({'priceRange':{$in: ["CHEAP", "MEDIUM"]}})
+db.restaurants.find({"address.city": "New York"})

@@ -21,6 +21,43 @@ Casi siempre son mas q todo de lectura, no escritura
 Porque es algo q si puedo cambiar o modificar alguno de sus atributos ejemplo el rating, le puse 4 luego algo no me gusto le cambio a 2 
 
 
+################################################### SUPER IMPORTANTE
+*El findAll() por si solo no retorna porque necesita el subscribe() q seria el observador
+*Mono --> NO tiene do OnComplete
+
+*---------- flatMapMany
+El this.restaurantRepository.findById(restaurantId) --> Devuelve  un Mono de restaurante y yo necesito regresar es un Flux Flux<ReservationCollection>
+por lo tanto, la clave es utilizar el flatMapMany. Como decir una relacion uno a muchos, un restaurante tiene muchas reservaciones
+public Flux<ReservationCollection> readByRestaurantId(UUID restaurantId, ReservationStatusEnum status) {
+        return this.restaurantRepository.findById(restaurantId)
+
+
+*---------- flatMap
+El this.restaurantRepository.findById(UUID.fromString(reservation.getRestaurantId())) --> Devuelve  un Mono de restaurante
+y se esta retornando un Mono<ReservationCollection> por lo tanto, la clave es utilizar el flatMap
+public Mono<ReservationCollection> createReservation(ReservationCollection reservation) {
+        return this.restaurantRepository.findById(UUID.fromString(reservation.getRestaurantId()))
+
+
+*Patron CHAIN
+En la funcion applyValidations() se hace us de este patron para poder ir ejecutando las validacion del
+BusinessValidator
+Se inicia el reduce con un Mono vacio Mono.empty() y el segundo parametro es la funcion de reducion,
+se va ejecutando validacion por validacion, cada vez q acabe una continua con la otra y asi sucesivamente,
+en caso de existir algun error lanza la excepcion q esta dentro de cada funcion q esta recorriendo
+y el Mono::then permite q se realice de manera secuencial y no de manera asincrona
+
+.reduce(
+                        Mono.empty(),
+                        (chain, validator) -> chain.then(validator.validate(input)),
+                        Mono::then
+                );
+
+ **************
+ .then = Es cuando quiero ejecutar algo
+ .thenReturn = Es cuando quiero retornar algo
+
+
 #########Querys Base Datos
 
 db["reservations"].find()
@@ -28,6 +65,6 @@ db["restaurants"].find({'cuisineType':'Japanese'})
 db["reservations"].find().limit(2)
 db["restaurants"].find({'name':'Pasta Fresca'})
 db["restaurants"].find({'name': {$regex:"Pasta", $options:"i"}})
-db["restaurants"].find({'name': {$regex:"La", $options:"i"}})
+db["restaurants"].find({'name': {$regex:"La", $options:"i"}}) --> La i es de init, de q inicie
 db.restaurants.find({'priceRange':{$in: ["CHEAP", "MEDIUM"]}})
 db.restaurants.find({"address.city": "New York"})

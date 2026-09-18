@@ -42,10 +42,17 @@ public class RestaurantCatalogServiceImpl implements RestaurantCatalogService {
     public Mono<RestaurantCollection> readByName(String name) {
      return this.restaurantRepository.findByNameStartingWithIgnoreCase(name)
              .doOnSubscribe(subscription -> log.info("Init search start with param: {}", name))
+             //.doOnComplete(() -> log.info("Search finish with param: {}", name))
              .onErrorResume(throwable -> {
                  log.error(throwable.getMessage(), throwable);
                  return Mono.empty();
              });
+            //  .doOnSubscribe(subscription -> log.info("Init search start with param: {}", name))
+            //  .doOnComplete(() -> log.info("Search finish with param: {}", name))
+            //  .onErrorResume(throwable -> {
+            //      log.error(throwable.getMessage(), throwable);
+            //      return Mono.empty();
+            //  });
     }
 
     @Override
@@ -59,12 +66,12 @@ public class RestaurantCatalogServiceImpl implements RestaurantCatalogService {
     @Override
     public Flux<RestaurantCollection> readByCity(String city) {
         return this.restaurantRepository.findAll()
-                .map(RestaurantCollection::getAddress)
-                .filter(Objects::nonNull)
+                .map(RestaurantCollection::getAddress) //restaurant -> restaurant.getAddress()
+                .filter(Objects::nonNull) //address -> address != null
                 .map(Address::city)
-                .filter(Objects::nonNull)
-                .distinct()
-                .collectList()
+                .filter(Objects::nonNull) // cityName -> cityName != null
+                .distinct() //Se quitan los repetidos en caso de haber
+                .collectList() //LO metemos en un flux de listas
                 .flatMapMany(cities -> {
 
                     if (cities.isEmpty()) {
@@ -82,4 +89,15 @@ public class RestaurantCatalogServiceImpl implements RestaurantCatalogService {
                     return Flux.empty();
                 });
     }
+
+    // @Override
+    // public Flux<RestaurantCollection> readByCity2(String city) {
+    //     return this.restaurantRepository.findByAddressCity(city)
+    //     .doOnNext(restautant -> log.info("Found restaurant in city: {} with name: {}", city, restautant))
+    //     .onErrorResume(throwable -> {
+    //         log.error(throwable.getMessage(), throwable);
+    //         return Flux.empty();
+    //     });
+
+    // }
 }

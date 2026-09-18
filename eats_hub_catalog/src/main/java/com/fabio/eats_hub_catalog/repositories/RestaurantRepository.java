@@ -13,10 +13,11 @@ public interface RestaurantRepository extends ReactiveMongoRepository<Restaurant
 
     Flux<RestaurantCollection> findByCuisineType(String cuisineType);
 
-    //@Query("{'name':  {$regex: '^?0', $options: 'i'   } }")
+    //@Query("{'name':  {$regex: '^?0', $options: 'i'   } }") La i es de init, de q inicie
     Mono<RestaurantCollection> findByNameStartingWithIgnoreCase(String name);
 
     Flux<RestaurantCollection> findByPriceRangeIn(List<PriceEnum> priceRanges);
 
+    //AddressCity = address.city
     Flux<RestaurantCollection> findByAddressCity(String city);
 }

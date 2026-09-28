@@ -57,8 +57,17 @@ y el Mono::then permite q se realice de manera secuencial y no de manera asincro
  .then = Es cuando quiero ejecutar algo
  .thenReturn = Es cuando quiero retornar algo
 
+***************AfterMapping
+@AfterMapping
+    default void splitDateTime
+*En dicha funcion se utilizan lso campos de  date y time,
+los cuales con las siguientes anotaciones los ignorA y los pone como NULL
+@Mapping(target = "date", ignore = true)
+@Mapping(target = "time", ignore = true)
 
-#########Querys Base Datos
+Por lo tanto con after mapping despues de NULL realiza la funcion de splitDateTime y los setea adecuadamente
+
+######### Querys Base Datos MONGO
 
 db["reservations"].find()
 db["restaurants"].find({'cuisineType':'Japanese'})
@@ -68,3 +77,9 @@ db["restaurants"].find({'name': {$regex:"Pasta", $options:"i"}})
 db["restaurants"].find({'name': {$regex:"La", $options:"i"}}) --> La i es de init, de q inicie
 db.restaurants.find({'priceRange':{$in: ["CHEAP", "MEDIUM"]}})
 db.restaurants.find({"address.city": "New York"})
+
+
+######### Atajos principales
+Alt + J → selecciona la siguiente ocurrencia de la palabra.
+Ctrl + Alt + Shift + J → selecciona todas las ocurrencias.
+Alt + Shift + J → deselecciona la última ocurrencia seleccionada

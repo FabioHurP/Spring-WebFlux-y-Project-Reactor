@@ -105,7 +105,6 @@ public class ReservationCrudServiceImpl implements ReservationCrudService {
 
         return this.reservationRepository.findById(id)
                 .switchIfEmpty(Mono.error(new ResourceNotFoundException("Reservation not found")))
-
                 .flatMap(existingReservation -> {
 
                     reservation.setRestaurantId(existingReservation.getRestaurantId());

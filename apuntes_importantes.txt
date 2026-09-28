@@ -67,6 +67,13 @@ los cuales con las siguientes anotaciones los ignorA y los pone como NULL
 
 Por lo tanto con after mapping despues de NULL realiza la funcion de splitDateTime y los setea adecuadamente
 
+
+*********** ServerResponse
+Es equivalente es como el ResponseEntity, 100 % REACTIVO, permite manejar
+los Status los codigos HTTP, El body, Header
+
+
+
 ######### Querys Base Datos MONGO
 
 db["reservations"].find()

@@ -12,3 +12,37 @@ services:
       - "27017:27017"
     volumes:
       - ./db/mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - eats-network
+
+  redis:
+    image: redis:7.4.1-alpine
+    restart: always
+    container_name: eats-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass fabio
+    networks:
+      - eats-network
+
+#Permite visualizar todos mi caches guardados
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    restart: always
+    container_name: eats-redis-ui
+    environment:
+      - REDIS_HOSTS=local:redis:6379:0:fabio
+      - HTTP_USER=admin
+      - HTTP_PASSWORD=fabio
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+    networks:
+      - eats-network
+
+networks:
+  eats-network:
+    driver: bridge
+
+## docker exec -i eats-redis sh < ./db/redis/init-redis.sh

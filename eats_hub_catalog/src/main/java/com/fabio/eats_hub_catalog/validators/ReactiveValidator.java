@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ReactiveValidator {
 
+    //Hace referencia al validator de la carpeta configs/ValidatorConfig
     private final Validator validator;
 
     public <T> Mono<T> validate(T object) {

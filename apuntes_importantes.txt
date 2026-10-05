@@ -73,6 +73,53 @@ Es equivalente es como el ResponseEntity, 100 % REACTIVO, permite manejar
 los Status los codigos HTTP, El body, Header
 
 
+********** Handlers
+Los archivos de mi handlres son como mis controladores
+
+************** @Order
+@Order(Ordered.HIGHEST_PRECEDENCE)
+public class GlobalErrorHandler implements ErrorWebExceptionHandler {
+
+Si llegaramos a tener otro Bean de tipo ErrorWebExceptionHandler, entonces este se va a crear primero
+por el HIGHEST_PRECEDENCE q contiene el valor minimo, como es el Global deberia tener el mayor orden
+y prioridad de creacion
+
+
+************** exchange
+ServerWebExchange exchange
+El objeto exchange permite mandar respuestas al frontend o al cliente
+
+
+************** REDIS -Cache
+Es como un mapa -- con Clave valor
+-Guardar todo en cache es una mala practica
+
+
+************** flatMapMany
+flatMapMany(Flux::fromIterable)
+es una lista de restaurantes q se van a aplanar en una sola lista
+
+
+
+************** opsForValue
+ops = Viene de la palabra operation --> set, get
+
+
+
+****** flush
+descarga el buffer
+
+
+
+******** .skip AND .take(size)
+El metodo Skip permite Paginar
+El metodo take permite determinar el tamaño
+
+page → número de página.
+size → cantidad de elementos que quieres mostrar por página.
+skip() → cuántos elementos debe saltarse.
+take() → cuántos elementos debe tomar después de saltarlos.
+
 
 ######### Querys Base Datos MONGO
 
@@ -84,6 +131,14 @@ db["restaurants"].find({'name': {$regex:"Pasta", $options:"i"}})
 db["restaurants"].find({'name': {$regex:"La", $options:"i"}}) --> La i es de init, de q inicie
 db.restaurants.find({'priceRange':{$in: ["CHEAP", "MEDIUM"]}})
 db.restaurants.find({"address.city": "New York"})
+db["reservations"].find({'_id':UUID('e2f7826f-41ca-4f7a-bf8c-1f2713a7a51a')})
+
+Desde el filter en el reloj
+{
+  "_id": UUID("e2f7826f-41ca-4f7a-bf8c-1f2713a7a51a")
+}
+
+
 
 
 ######### Atajos principales

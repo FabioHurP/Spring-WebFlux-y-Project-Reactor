@@ -1,0 +1,5 @@
+******
+.retrieve()//sirve para ejecutar una petición HTTP y comenzar a procesar la respuesta del servidor.
+
+********** RESILIENCIA
+.retryWhen

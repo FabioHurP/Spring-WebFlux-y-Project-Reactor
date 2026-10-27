@@ -3,3 +3,13 @@
 
 ********** RESILIENCIA
 .retryWhen
+
+
+
+**************** Seleccionar varias lineas
+
+Seleccionar varias líneas: mantén Shift y usa las flechas ↑ o ↓.
+Seleccionar palabras completas: Ctrl + Shift + ← / →.
+Seleccionar varias partes con varios cursores: mantén Alt y haz clic en cada lugar (Windows).
+Seleccionar la siguiente coincidencia del texto: Alt + J (Windows).
+Seleccionar todas las coincidencias: Ctrl + Alt + Shift + J (Windows).

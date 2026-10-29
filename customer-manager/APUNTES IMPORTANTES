@@ -13,3 +13,31 @@ Seleccionar palabras completas: Ctrl + Shift + ← / →.
 Seleccionar varias partes con varios cursores: mantén Alt y haz clic en cada lugar (Windows).
 Seleccionar la siguiente coincidencia del texto: Alt + J (Windows).
 Seleccionar todas las coincidencias: Ctrl + Alt + Shift + J (Windows).
+
+
+########## FUNCIONAMIENTO KAFAK
+*El controlador manda a llamar en el StreamService el sink (ratingRequestSink) y emite el mensaje,
+el public Sinks.Many<Message<String>> ratingRequestSink() de RatingStreamsConfin lo recibe y lo va a inyectar
+a nuestro  public Supplier<Flux<Message<String>>> ratingRequestSupplier q lo va a enviar a través de KAFKA
+*Transformación de Mensajes: Como se menciona en las conferencias, un flujo típico podría ser:
+el controlador de rating recibe una solicitud, la envía a través de un StreamService,
+que luego la publica en un tópico de Kafka.
+
+########## BINDERS
+*En este caso KAFKA es el binders y si estuvieramos trabajando con RabbitMQ este ultimo seria el binder,
+lo cual el BINDER corresponde al canal logico por el cual se van a enviar o trabajar los mensajes
+
+*BROKER de KAFKA= es un nodo logico q distribuye mensajes
+
+########## BINDINGS
+*Es el mapeo de las funciones q definimos, es la infraestructura,
+especialmente para las funciones suppliers, consumer y function
+
+#Supplier --> JSON <-- Function -> NEW_JSON <- Consumer
+#JSON de entrada que viaja a través del controlador y se recibe en neustro supplier
+#el suppliers recibe el JSON a traves del sink
+#Supplier envia, provee el JSON a traves de KAFKA, mi interfaz Function recibe el JSON y Function saca un nuevo JSON
+#Este nuevo JSON ya transformado lo va a recibir eventualmente  mi interfaz Consumer q va estar dentro del microservicio
+#Supplier --> JSON <-- Function -> NEW_JSON <- Consumer
+#La public Function< es la unica funcion con capacidad de consumir y producir
+#todo esto pasa atraves de un canal de kafka

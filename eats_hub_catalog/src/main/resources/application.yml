@@ -1,0 +1,38 @@
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb: DEBUG
+
+spring:
+  application:
+    name: eats_hub_catalog
+  webflux:
+    base-path: /catalog
+  output:
+    ansi:
+      enabled: ALWAYS
+
+  cloud:
+    function:
+      #Lo que hago aquí es decirle a Spring q me cargue estas dos funciones para trabajar con KAFKA
+      definition: reviewEventConsumer
+    stream:
+      kafka:
+        binder:
+          #aqui podemos agregar y separar por , los bokers q necesitemos localhost:9092, localhost:8080, http://...
+          brokers: localhost:9092
+          consumer-properties:
+            auto.offset.reset: earliest #Estoe s opcional y le estamos diciendo q consuma los mensajes desde el principio
+      bindings:
+        #Supplier únicamente produce un canal de salida por eso el -out- --> ratingRequestSupplier es una función de RatingStreamsConfig
+        reviewEventConsumer-in-0:
+          destination: rating-events #Este es como el topico
+          content-type: text/plain
+          consumer:
+            concurrency: 1
+            max-attempts: 3
+
+server:
+  port: 8080

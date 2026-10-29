@@ -1,0 +1,73 @@
+logging:
+  level:
+    io.r2dbc.pool: INFO
+    org:
+      springframework:
+        data.r2dbc: INFO
+        transaction: INFO
+        cloud.stream: INFO
+      kafka: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+server:
+  port: 9090
+
+spring:
+  application:
+    name: customer-manager
+  webflux:
+    base-path: /customer
+
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/customers
+    username: postgres
+    password: 123
+    pool:
+      enabled: true
+      initial-size: 15
+      max-size: 30
+      max-life-time: 180000ms
+      max-idle-time: 100000ms
+      max-create-connection-time: 10000ms
+      validation-depth: local
+      validation-query: SELECT 1
+
+  cloud:
+    function:
+      #Lo que hago aquí es decirle a Spring q me cargue estas dos funciones para trabajar con KAFKA
+      definition: ratingRequestSupplier;ratingTransformer
+    stream:
+      kafka:
+        binder:
+          #aqui podemos agregar y separar por , los bokers q necesitemos localhost:9092, localhost:8080, http://...
+          brokers: localhost:9092
+          auto-create-topics: true
+          producer-properties:
+            acks: all
+            # enable.idempotence - me permite q no hayan mensajes redundantes
+            enable.idempotence: true
+
+      #Supplier --> JSON <-- Function -> NEW_JSON <- Consumer
+      #destination son los topicos
+      bindings:
+        #Supplier únicamente produce un canal de salida por eso el -out- --> ratingRequestSupplier es una función de RatingStreamsConfig
+        ratingRequestSupplier-out-0:
+          destination: rating-request-internal #Este es como el topico
+          content-type: text/plain
+        #ratingTransformer es una función de RatingStreamsConfig, tiene la capacidad entrar y salir por eso el -in-
+        #Hasta aqui tendriamo mapeado Supplier --> JSON <--
+        ratingTransformer-in-0:
+          destination: rating-request-internal
+          group: rating-transformer
+          content-type: text/plain
+        #ratingTransformer es una función de RatingStreamsConfig, tiene la capacidad entrar y salir por eso ahora -out- ya que arriba pusimos -in-
+        #Hasta aqui tendriamo mapeado Supplier --> JSON <-- Function -> NEW_JSON
+        ratingTransformer-out-0:
+          destination: rating-events
+          content-type: text/plain
+          producer:
+            #Tiene q ver con KafkaHeaders.KEY
+            partition-count: 1
+
+

@@ -138,6 +138,10 @@ Desde el filter en el reloj
   "_id": UUID("e2f7826f-41ca-4f7a-bf8c-1f2713a7a51a")
 }
 
+db.restaurants.find(
+  { _id: UUID("0ee619ba-e95f-4103-99f7-ee9cdf831d90") },
+  { reviews: 1, _id: 0 }
+);
 
 
 
@@ -145,3 +149,55 @@ Desde el filter en el reloj
 Alt + J → selecciona la siguiente ocurrencia de la palabra.
 Ctrl + Alt + Shift + J → selecciona todas las ocurrencias.
 Alt + Shift + J → deselecciona la última ocurrencia seleccionada
+
+
+####-----------------------##############  KAFKA
+docker compose pull
+docker compose up -d
+
+Ver los registros de Kafka: docker compose logs -f kafka
+
+############  comandos para probar KAFKA
+docker exec -it kafka-broker \
+kafka-topics.sh --bootstrap-server localhost:9092 \
+--create --topic rating-events --partitions 1 --replication-factor 1
+
+
+docker exec -it kafka-broker \
+kafka-console-producer.sh --bootstrap-server localhost:9092 \
+--topic rating-events
+
+
+docker exec -it kafka-broker \
+kafka-console-consumer.sh --bootstrap-server localhost:9092 \
+--topic rating-events --from-beginning
+
+EN WINDOWS
+##### CREAR EL TOPIC
+docker exec -it kafka-broker kafka-topics.sh --bootstrap-server localhost:9092 --create --topic rating-events --partitions 1 --replication-factor 1
+
+
+##### from-beginning --> Me permite obtener los mensajes desde el inicio
+
+##### Este comando es para conectarnos a la consola de PRODUCER de topic rating-events
+docker exec -it kafka-broker kafka-console-producer.sh --bootstrap-server localhost:9092 --topic rating-events
+
+##### Abrir la consola del CONSUMER
+docker exec -it kafka-broker kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic rating-events --from-beginning
+
+############# Con este comando consultamos el rating-request-internal q el topico q creamos con los bindings en el application.yml del customer-manager
+1- docker exec -it kafka-broker kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic rating-request-internal --from-beginning --property print.key=true
+2- docker exec -it kafka-broker kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic rating-events --from-beginning --property print.key=true
+
+
+
+############ MMono.just() -- Mono.defer()
+Mono.just(): recibe un valor que normalmente ya se ha calculado.
+Mono.defer():espera a la suscripción para crear el Mono.
+
+############# Review.builder() y .build() 
+normalmente pertenecen al patrón de diseño Builder, que permite construir objetos de manera ordenada y legible.
+Review.builder()	Inicia la construcción del objeto.
+.customerId()	Asigna un atributo.
+.rating()	Asigna otro atributo.
+.build()	Construye y devuelve el objeto final.
